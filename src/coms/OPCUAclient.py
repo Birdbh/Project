@@ -26,7 +26,7 @@ class SubList:
     def __new__(self, client_id):
         if client_id not in self._instances:
             instance = super().__new__(self)
-            instance.handelr = None
+            instance.handler = None
             self._instances[client_id] = instance
         return self._instances[client_id]
     
@@ -55,6 +55,7 @@ class SubHandler(object):
             if str(node) == potential_node.address:
                 potential_node.past_value = potential_node.current_value
                 potential_node.current_value = val
+                print("Node: ", node, " | Value: ", val, " | Client: ", self.client_id)
 
 class PLC():
     def __init__(self, ip_address):
@@ -90,3 +91,10 @@ class PLC_Manager():
     def add_plc(self, ip_address):
         plc = PLC(ip_address)
         self.plcs.append(plc)
+
+    def add_all(self):
+        for ip_address in self.node_dictionary:
+            self.add_plc(ip_address)
+
+manager = PLC_Manager()
+manager.add_all()
