@@ -2,7 +2,7 @@ class SubList:
     instances = {}
     
     def __new__(self, client_id):
-        if client_id not in self._instances:
+        if client_id not in self.instances:
             instance = super().__new__(self)
             instance.handler = None
             self.instances[client_id] = instance
