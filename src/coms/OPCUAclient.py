@@ -3,59 +3,10 @@ import code
 import config
 
 from opcua import Client, ua
-
-class NodeList:
-    _instances = {}
-
-    def __new__(self, client_id):
-        if client_id not in self._instances:
-            instance = super().__new__(self)
-            instance._nodes = []
-            self._instances[client_id] = instance
-        return self._instances[client_id]
-    
-    def add_node(self, node):
-        self._nodes.append(node)
-    
-    def get_nodes(self):
-        return self._nodes
-    
-class SubList:
-    _instances = {}
-    
-    def __new__(self, client_id):
-        if client_id not in self._instances:
-            instance = super().__new__(self)
-            instance.handler = None
-            self._instances[client_id] = instance
-        return self._instances[client_id]
-    
-    def set_handler(self, handler):
-        self.handler = handler
-    
-    def get_handerl(self):
-        return self.handler
-
-class Node():
-    def __init__(self, address, client_id):
-        self.address = address
-        self.past_value = None
-        self.current_value = None
-        node_list = NodeList(client_id)
-        node_list.add_node(self)
-
-class SubHandler(object):
-    def __init__(self, client_id):
-        self.client_id = client_id
-
-    def datachange_notification(self, node, val, data):
-
-        node_list = NodeList(self.client_id)
-        for potential_node in node_list.get_nodes():
-            if str(node) == potential_node.address:
-                potential_node.past_value = potential_node.current_value
-                potential_node.current_value = val
-                print("Node: ", node, " | Value: ", val, " | Client: ", self.client_id)
+from NodeList import NodeList
+from SubList import SubList
+from SubHandler import SubHandler
+from Node import Node
 
 class PLC():
     def __init__(self, ip_address):
