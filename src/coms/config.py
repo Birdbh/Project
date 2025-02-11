@@ -1,6 +1,7 @@
 node_dictionary = {
     "opc.tcp://172.21.10.1:4840" : {
-        "nodes" : ['ns=3;s="xCurConvStatus"', 
+        "nodes" : [
+        'ns=3;s="xCurConvStatus"', 
         'ns=3;s=V_"ActuatorCntr"."Drive"."iConvVelo"',
         'ns=3;s=O_"DriveDC"."WarnConvStop"',
         'ns=3;s=V_"DriveDC"."xCarrierOnConv"',
@@ -10,7 +11,8 @@ node_dictionary = {
         'ns=3;s="dbVar"."Options"."xEnConvStop"',
         'ns=3;s="dbAppIF"."Out"."xConvStop"',
         'ns=3;s="dbTransport"."Drive1"."xEnConvStop"',
-        'ns=3;s="dbTransport"."Drive1"."xCarrierOnConv"']
+        'ns=3;s="dbTransport"."Drive1"."xCarrierOnConv"'
+        ]
     },
     "opc.tcp://172.21.1.1:4840" : {
         "nodes" : ['ns=3;s="xCurConvStatus"']
