@@ -17,13 +17,17 @@ class PLC():
 
         try:
             self.client.connect()
-            handler = SubHandler()
+            handler = SubHandler(self.ip_address)
             self.sub_list.set_handler(handler)
 
             for node_address in config.node_dictionary[ip_address]["nodes"]:
-                node = Node(node_address, ip_address)
-                self.node_list.add_node(node)
-                self.subscribe_nodes(node, handler)
+                try:
+                    node = Node(node_address, ip_address)
+                    self.node_list.add_node(node)
+                    self.subscribe_nodes(node, handler)
+
+                except Exception as e:
+                    print(e)
 
         except Exception as e:
             print(e)

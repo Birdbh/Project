@@ -1,4 +1,5 @@
 from NodeList import NodeList
+import database as db
 
 class SubHandler(object):
     def __init__(self, client_id):
@@ -11,4 +12,5 @@ class SubHandler(object):
             if str(node) == potential_node.address:
                 potential_node.past_value = potential_node.current_value
                 potential_node.current_value = val
+                db.insert_data(self.client_id, str(node), str(val))
                 print("Node: ", node, " | Value: ", val, " | Client: ", self.client_id)
