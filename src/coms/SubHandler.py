@@ -1,5 +1,8 @@
 from NodeList import NodeList
-import database as db
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+import data.database as db
 
 class SubHandler(object):
     def __init__(self, client_id):

@@ -2,11 +2,11 @@ import streamlit as st
 import pandas as pd
 import sqlite3
 import sys
-sys.path.append('src')
+sys.path.append('src/data')
 
 import os
 # Use an absolute path for the database connection
-database = os.path.abspath(r'C:\Users\birdl\Desktop\Main\Year 5\Term 2\MANF 465\Project\src\database\database.db')
+database = os.path.abspath(r'C:\Users\birdl\Desktop\Main\Year 5\Term 2\MANF 465\Project\src\data\database.db')
 
 def get_table_names():
     conn = sqlite3.connect(database)

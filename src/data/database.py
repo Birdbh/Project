@@ -1,9 +1,13 @@
 import sqlite3
 import sys
 sys.path.append('src/coms')
-from config import node_dictionary
+from coms.config import node_dictionary
 
-database = 'src/database/database.db'
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+import datetime
+
+database = "Project/src/data/database.db"
 
 conn = sqlite3.connect(database)
 c = conn.cursor()
@@ -24,8 +28,7 @@ def insert_data(ip_address, node, data):
     conn = sqlite3.connect(database)
     node = "'"+node+"'"
     c = conn.cursor()
-    c.execute("INSERT INTO '" + ip_address + "' (time, " + node + ") VALUES (datetime('now'), " + data + ")")
+    print("ip_address: " + str(ip_address) + " time: " + str(datetime.datetime.now()) + " node: " + node + " data: " + data)
+    c.execute("INSERT INTO '" + ip_address + "' (time, " + node + ") VALUES (datetime('now', 'localtime'), " + data + ")")
     conn.commit()
     c.close()
-
-create_tables()

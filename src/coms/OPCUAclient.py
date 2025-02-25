@@ -23,7 +23,6 @@ class PLC():
             for node_address in config.node_dictionary[ip_address]["nodes"]:
                 try:
                     node = Node(node_address, ip_address)
-                    self.node_list.add_node(node)
                     self.subscribe_nodes(node, handler)
 
                 except Exception as e:
