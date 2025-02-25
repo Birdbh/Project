@@ -28,16 +28,4 @@ def insert_data(ip_address, node, data):
     conn.commit()
     c.close()
 
-def insert_random_date():
-    conn = sqlite3.connect(database)
-    c = conn.cursor()
-    for ip_address in node_dictionary:
-        for node in node_dictionary[ip_address]["nodes"]:
-            c.execute("INSERT INTO '" + ip_address + "' (time, '" + node + "') VALUES (datetime('now'), " + str(1) + ")")
-            conn.commit()
-            print("Data inserted for: ", ip_address, " | Node: ", node)
-    c.close()
-
-
 create_tables()
-insert_random_date()

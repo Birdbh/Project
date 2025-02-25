@@ -1,21 +1,34 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
-import time
+import sqlite3
+import sys
+sys.path.append('src')
 
-st.title('Real-time Data Update')
+import os
+# Use an absolute path for the database connection
+database = os.path.abspath(r'C:\Users\birdl\Desktop\Main\Year 5\Term 2\MANF 465\Project\src\database\database.db')
 
-# Create a placeholder for the graph
-graph_placeholder = st.empty()
+def get_table_names():
+    conn = sqlite3.connect(database)
+    c = conn.cursor()
+    c.execute("SELECT name FROM sqlite_master WHERE type='table';")
+    tables = [table[0] for table in c.fetchall()]
+    conn.close()
+    return tables
 
-# Generate random data
-data = pd.DataFrame(np.random.randn(10, 2), columns=['x', 'y'])
+def get_table_data(table_name):
+    conn = sqlite3.connect(database)
+    query = f"SELECT * FROM '{table_name}'"
+    df = pd.read_sql_query(query, conn)
+    conn.close()
+    return df
 
-# Update the graph
-graph_placeholder.line_chart(data)
+st.title('Database Line Chart')
 
-# Wait for 2 seconds before rerunning
-time.sleep(2)
+# Dropdown to select table
+table_names = get_table_names()
+selected_table = st.selectbox('Select a table', table_names)
 
-# Rerun the script
-st.rerun()
+if selected_table:
+    data = get_table_data(selected_table)
+    st.line_chart(data.set_index('time'))
