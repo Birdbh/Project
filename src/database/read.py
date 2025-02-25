@@ -1,7 +1,7 @@
 import sqlite3
 
 # Create a SQL connection to our SQLite database
-con = sqlite3.connect("database.db")
+con = sqlite3.connect('src/database/database.db')
 
 cur = con.cursor()
 
