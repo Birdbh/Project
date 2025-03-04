@@ -6,7 +6,7 @@ sys.path.append('src/data')
 
 import os
 # Use an absolute path for the database connection
-database = os.path.abspath(r'C:\Users\birdl\Desktop\Main\Year 5\Term 2\MANF 465\Project\src\data\database.db')
+database = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data', 'database.db'))
 
 def get_table_names():
     conn = sqlite3.connect(database)
@@ -17,6 +17,7 @@ def get_table_names():
     return tables
 
 def get_table_data(table_name):
+    print(database)
     conn = sqlite3.connect(database)
     query = f"SELECT * FROM '{table_name}'"
     df = pd.read_sql_query(query, conn)
