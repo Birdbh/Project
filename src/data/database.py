@@ -1,13 +1,12 @@
 import sqlite3
 import sys
-sys.path.append('src/coms')
-from coms.config import node_dictionary
-
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from coms.config import node_dictionary, station_Names
 import datetime
 
-database = "Project/src/data/database.db"
+# Use an absolute path for the database connection
+database = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data', 'database.db'))
 
 conn = sqlite3.connect(database)
 c = conn.cursor()
@@ -15,11 +14,15 @@ c = conn.cursor()
 def create_tables():
     for ip_address in node_dictionary:
         values = "'"
+        actual_name = None
+        for ip, name in station_Names:
+            if ip == ip_address:
+                actual_name = name
         for node in node_dictionary[ip_address]["nodes"]:
             values += node + "' REAL, '" 
         
         values = values.removesuffix(", '")
-        create_string = "CREATE TABLE IF NOT EXISTS '" + ip_address + "' (time DATETIME, " + values + ")"
+        create_string = "CREATE TABLE IF NOT EXISTS '" + actual_name + "' (time DATETIME, " + values + ")"
         c.execute(create_string)
         print("Table created for: ", ip_address)
     c.close()
