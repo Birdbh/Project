@@ -305,12 +305,12 @@ def get_analytics_dataframes():
         'overall_metrics': get_overall_metrics()
     }
 
-if __name__ == "__main__":
-    # Example usage for testing
-    dfs = get_analytics_dataframes()
-    print("Daily Metrics Sample:")
-    print(dfs['daily_metrics'])
-    print("\nStation Metrics Sample:")
-    print(dfs['station_metrics'])
-    print("\nOverall Metrics:")
-    print(dfs['overall_metrics'])
+# if __name__ == "__main__":
+#     # Example usage for testing
+#     dfs = get_analytics_dataframes()
+#     print("Daily Metrics Sample:")
+#     print(dfs['daily_metrics'])
+#     print("\nStation Metrics Sample:")
+#     print(dfs['station_metrics'])
+#     print("\nOverall Metrics:")
+#     print(dfs['overall_metrics'])
