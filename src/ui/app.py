@@ -38,6 +38,22 @@ def get_table_data(table_name):
 
 st.title('CP Lab Manufacturing Analytics')
 
+# Overall Metrics
+st.write("## Overal CP Lab Metrics")
+overall_run = round(df_overall.loc[0, "total_runtime_hours"], 4)
+overall_alarms = df_overall.loc[0, "total_alarms"]
+overall_pallets = df_overall.loc[0, "total_pallets"]
+with st.container():
+    col1, col2, col3 = st.columns([1,1,1])
+    
+    with col1:
+        st.metric(label= "Overall runtime (hrs)", value=overall_run)
+    with col2:
+        st.metric(label="Total Alarms Triggered",value=overall_alarms)
+    with col3:
+        st.metric(label="Overall Pallets Tracked", value=f"{overall_pallets}")
+
+
 # Dropdown to select table
 st.write("## Dropdown Analytics Table")
 table_names = get_table_names()
