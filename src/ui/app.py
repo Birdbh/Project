@@ -1,16 +1,24 @@
 import streamlit as st
 import pandas as pd
+import plotly.express as px
+from sklearn.cluster import KMeans
+from mpl_toolkits.mplot3d import Axes3D
 import sqlite3
 import sys
 import os
+from analytics import data_processor
+from openai import OpenAI
+import os
 sys.path.append('src/data')
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from analytics import data_processor
-import os
+
 # Use an absolute path for the database connection
 database = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data', 'database.db'))
 
 dfs = data_processor.get_analytics_dataframes()
+df_daily = dfs['daily_metrics']
+df_station = dfs['station_metrics']
+df_overall = dfs['overall_metrics']
 
 def get_table_names():
     conn = sqlite3.connect(database)
@@ -28,9 +36,10 @@ def get_table_data(table_name):
     conn.close()
     return df
 
-st.title('Database Line Chart')
+st.title('CP Lab Manufacturing Analytics')
 
 # Dropdown to select table
+st.write("## Dropdown Analytics Table")
 table_names = get_table_names()
 selected_table = st.selectbox('Select a table', table_names)
 
@@ -38,8 +47,74 @@ if selected_table:
     data = get_table_data(selected_table)
     st.line_chart(data.set_index('time'))
 
-from openai import OpenAI
-import streamlit as st
+# K Clustering Charts (switch to use daily totals)
+st.write("""
+         ## K Means Clustering Chart
+          This chart shows the K Means clustering of stations runtime, alarm & pallet count data.
+         """)
+
+selected_columns = ["cum_runtime", "cum_alarms", "cum_pallets"]
+
+if all(col in df_station.columns for col in selected_columns):
+    X = df_station[selected_columns].dropna()
+    n_clusters = st.slider("Select a cluster factor", 1, 8)
+    
+    kmeans = KMeans(n_clusters=n_clusters, random_state=42)
+    df_station["Cluster"] = kmeans.fit_predict(X)
+    df_station["Cluster"] = df_station["Cluster"].astype("category")
+
+    
+    centroids = kmeans.cluster_centers_
+    centroids_df = pd.DataFrame(centroids, columns=selected_columns)
+    centroids_df["Cluster"] = range(n_clusters)
+    df_station_with_centroids = pd.concat([df_station, centroids_df], axis=0)
+
+    fig = px.scatter_3d(df_station_with_centroids, x="cum_runtime", y="cum_alarms", z="cum_pallets",
+                        color="Cluster", 
+                        labels={"cum_runtime": "Cumulative Runtime",
+                                "cum_alarms": "Cumulative Alarms",
+                                "cum_pallets": "Cumulative Pallets",
+                                "Cluster": "Cluster Label"},
+                        title=f"K Means Clustering of Station Metrics (Clusters: {n_clusters})",
+                        color_continuous_scale="Viridis",
+                        category_orders={"Cluster": [str(i) for i in range(n_clusters)]})
+    
+    fig.update_traces(marker=dict(size=8, line=dict(color="black", width=1)),
+                      selector=dict(mode='markers'))
+
+    centroid_trace = px.scatter_3d(centroids_df, x="cum_runtime", y="cum_alarms", z="cum_pallets",
+                                   color="Cluster", size_max=8).data[0]
+
+    centroid_trace.update(marker=dict(size=12, color='red', symbol='x', line=dict(color='black', width=2)),
+                          showlegend=True, legendgroup="Centroids", name="Centroids")
+
+    fig.add_trace(centroid_trace)
+
+    fig.update_layout(
+        width=1200,  
+        height=800, 
+        title="K Means Clustering of Station Metrics",
+        scene=dict(
+            xaxis_title="Cumulative Runtime",
+            yaxis_title="Cumulative Alarms",
+            zaxis_title="Cumulative Pallets"
+        ),
+        legend=dict(
+            title="Cluster", 
+            x=0.85,  
+            y=0.9,  
+            traceorder="normal", 
+            bgcolor="rgba(255, 255, 255, 0.7)", 
+            bordercolor="Black", 
+            borderwidth=2 
+        )
+    )
+
+    st.plotly_chart(fig)
+else:
+    st.error("One or more selected columns are missing in station_metrics DataFrame")
+
+
 
 with st.sidebar:
     client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
