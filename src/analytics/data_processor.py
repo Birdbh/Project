@@ -75,7 +75,8 @@ def calculate_runtime_between_state_changes(df, status_column='conveyor_status')
     })
     
     # Calculate duration in seconds
-    runtime_df['duration_seconds'] = (runtime_df['end_time'] - runtime_df['start_time']).dt.total_seconds()
+    runtime_df['duration_seconds'] = abs((runtime_df['end_time'] - runtime_df['start_time']).dt.total_seconds())
+
     
     return runtime_df
 
@@ -147,6 +148,18 @@ def get_daily_metrics():
             daily_alarms.rename(columns={'event_count': 'value'}, inplace=True)
             
             daily_metrics.append(daily_alarms)
+        
+        # Pallet calculations
+        pallets_df = count_events(station_df, 'pallet_sensor', 1.0)  # 1 means pallet detected
+        
+        if not pallets_df.empty:
+            pallets_df['date'] = pallets_df['time'].dt.date
+            daily_pallets = pallets_df.groupby('date')['event_count'].sum().reset_index()
+            daily_pallets['station'] = station
+            daily_pallets['metric'] = 'pallets_count'
+            daily_pallets.rename(columns={'event_count': 'value'}, inplace=True)
+            
+            daily_metrics.append(daily_pallets)
     
     # Combine all metrics
     if daily_metrics:
@@ -292,7 +305,7 @@ def get_overall_metrics():
         'total_runtime_seconds': latest_metrics['cum_runtime'].sum(),
         'total_runtime_hours': latest_metrics['cum_runtime'].sum() / 3600,
         'total_alarms': latest_metrics['cum_alarms'].sum(),
-        'total_pallets': latest_metrics['cum_pallets'].sum()
+        'total_pallets': latest_metrics['cum_pallets'].min()
     }
     
     return pd.DataFrame([overall])
@@ -305,12 +318,12 @@ def get_analytics_dataframes():
         'overall_metrics': get_overall_metrics()
     }
 
-# if __name__ == "__main__":
-#     # Example usage for testing
-#     dfs = get_analytics_dataframes()
-#     print("Daily Metrics Sample:")
-#     print(dfs['daily_metrics'])
-#     print("\nStation Metrics Sample:")
-#     print(dfs['station_metrics'])
-#     print("\nOverall Metrics:")
-#     print(dfs['overall_metrics'])
+if __name__ == "__main__":
+    # Example usage for testing
+    dfs = get_analytics_dataframes()
+    print("Daily Metrics Sample:")
+    print(dfs['daily_metrics'])
+    print("\nStation Metrics Sample:")
+    print(dfs['station_metrics'])
+    print("\nOverall Metrics:")
+    print(dfs['overall_metrics'])
