@@ -6,11 +6,11 @@ from mpl_toolkits.mplot3d import Axes3D
 import sqlite3
 import sys
 import os
-from analytics import data_processor
 from openai import OpenAI
 import os
 sys.path.append('src/data')
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from analytics import data_processor
 
 # Use an absolute path for the database connection
 database = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data', 'database.db'))
@@ -36,23 +36,38 @@ def get_table_data(table_name):
     conn.close()
     return df
 
+# Function to load CSS file
+def load_css(css_file):
+    with open(css_file, "r") as f:
+        css = f.read()
+    return css
+
+# Function to load HTML templates
+def load_template(template_file):
+    with open(template_file, "r") as f:
+        template = f.read()
+    return template
+
 st.title('CP Lab Manufacturing Analytics')
 
 # Overall Metrics
-st.write("## Overal CP Lab Metrics")
 overall_run = round(df_overall.loc[0, "total_runtime_hours"], 4)
 overall_alarms = df_overall.loc[0, "total_alarms"]
 overall_pallets = df_overall.loc[0, "total_pallets"]
-with st.container():
-    col1, col2, col3 = st.columns([1,1,1])
-    
-    with col1:
-        st.metric(label= "Overall runtime (hrs)", value=overall_run)
-    with col2:
-        st.metric(label="Total Alarms Triggered",value=overall_alarms)
-    with col3:
-        st.metric(label="Overall Pallets Tracked", value=f"{overall_pallets}")
 
+# Load CSS from external file
+css_path = os.path.join(os.path.dirname(__file__), "styles", "styles.css")
+st.markdown(f"<style>{load_css(css_path)}</style>", unsafe_allow_html=True)
+
+# Load and format metrics template
+template_path = os.path.join(os.path.dirname(__file__), "templates", "metrics.html")
+metrics_template = load_template(template_path)
+metrics_html = metrics_template.format(
+    runtime=overall_run,
+    alarms=overall_alarms,
+    pallets=overall_pallets
+)
+st.markdown(metrics_html, unsafe_allow_html=True)
 
 # Dropdown to select table
 st.write("## Dropdown Analytics Table")
