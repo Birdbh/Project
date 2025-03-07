@@ -292,7 +292,7 @@ def get_overall_metrics():
         'total_runtime_seconds': latest_metrics['cum_runtime'].sum(),
         'total_runtime_hours': latest_metrics['cum_runtime'].sum() / 3600,
         'total_alarms': latest_metrics['cum_alarms'].sum(),
-        'total_pallets': latest_metrics['cum_pallets'].sum()
+        'total_pallets': latest_metrics['cum_pallets'].max()
     }
     
     return pd.DataFrame([overall])
