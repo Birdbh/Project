@@ -31,7 +31,11 @@ def insert_data(ip_address, node, data):
     conn = sqlite3.connect(database)
     node = "'"+node+"'"
     c = conn.cursor()
+    actual_name = None
+    for ip, name in station_Names:
+        if ip == ip_address:
+            actual_name = name
     print("ip_address: " + str(ip_address) + " time: " + str(datetime.datetime.now()) + " node: " + node + " data: " + data)
-    c.execute("INSERT INTO '" + ip_address + "' (time, " + node + ") VALUES (datetime('now', 'localtime'), " + data + ")")
+    c.execute("INSERT INTO '" + actual_name + "' (time, " + node + ") VALUES (datetime('now', 'localtime'), " + data + ")")
     conn.commit()
     c.close()
