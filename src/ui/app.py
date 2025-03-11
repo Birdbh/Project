@@ -7,6 +7,7 @@ import sqlite3
 import sys
 import os
 from openai import OpenAI
+import datetime
 import os
 sys.path.append('src/data')
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
@@ -68,15 +69,6 @@ metrics_html = metrics_template.format(
     pallets=overall_pallets
 )
 st.markdown(metrics_html, unsafe_allow_html=True)
-
-# Dropdown to select table
-st.write("## Dropdown Analytics Table")
-table_names = get_table_names()
-selected_table = st.selectbox('Select a table', table_names)
-
-if selected_table:
-    data = get_table_data(selected_table)
-    st.line_chart(data.set_index('time'))
 
 # K Clustering Charts (switch to use daily totals)
 st.write("""
@@ -145,7 +137,48 @@ if all(col in df_station.columns for col in selected_columns):
 else:
     st.error("One or more selected columns are missing in station_metrics DataFrame")
 
+# Dropdown to select station
+st.write("## Station-Date Metric Table")
+station_names = df_daily["station"].unique().tolist()
+if station_names:
+    selected_station = st.selectbox('Select a station', station_names)
 
+    #Date Selector
+    d = st.date_input("Process Date Selection", value="today", format="YYYY-MM-DD")
+    
+    # Convert date format consistently and handle potential format differences
+    date_str = d.strftime("%Y-%m-%d")
+    station_and_day_table = df_daily[(df_daily["station"] == selected_station) & 
+                                     (pd.to_datetime(df_daily["date"]).dt.strftime("%Y-%m-%d") == date_str)]
+    
+    # Check if we have data before plotting
+    if not station_and_day_table.empty:
+        st.write(f"Data for {selected_station} on {date_str}")
+        st.write(station_and_day_table)
+        
+        # Set index and select numeric columns for plotting
+        numeric_cols = station_and_day_table.select_dtypes(include=['number']).columns
+        if not numeric_cols.empty:
+            # Use Plotly to create a grouped bar chart instead of stacked
+            fig = px.bar(station_and_day_table, y=numeric_cols, barmode='group',
+                        title=f"Metrics for {selected_station} on {date_str}")
+            fig.update_layout(xaxis_title="Metrics", yaxis_title="Values")
+            st.plotly_chart(fig)
+        else:
+            st.warning("No numeric data available to plot")
+    else:
+        st.warning(f"No data found for {selected_station} on {date_str}")
+else:
+    st.warning("No station data available")
+
+# Dropdown to select table
+st.write("## Dropdown Analytics Table")
+table_names = get_table_names()
+selected_table = st.selectbox('Select a table', table_names)
+
+if selected_table:
+    data = get_table_data(selected_table)
+    st.line_chart(data.set_index('time'))
 
 with st.sidebar:
     client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
