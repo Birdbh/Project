@@ -10,7 +10,7 @@ scikit-learn>=1.2.0
 matplotlib>=3.7.0
 
 # Industrial communication
-opcua-python>=0.98.13
+opcua
 mpl_toolkits
 # AI integration
 openai>=1.0.0
