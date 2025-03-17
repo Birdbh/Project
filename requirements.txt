@@ -11,7 +11,6 @@ matplotlib>=3.7.0
 
 # Industrial communication
 opcua
-mpl_toolkits
 # AI integration
 openai>=1.0.0
 
