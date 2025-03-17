@@ -1,1 +1,19 @@
-opcua
+# Core data processing and visualization
+pandas>=1.5.0
+numpy>=1.24.0
+plotly>=5.13.0
+streamlit>=1.25.0
+
+# Machine learning
+scikit-learn>=1.2.0
+matplotlib>=3.7.0
+
+# Industrial communication
+opcua-python>=0.98.13
+mpl_toolkits
+# AI integration
+openai>=1.0.0
+
+sqlite3
+# Additional utilities
+python-dateutil>=2.8.2
