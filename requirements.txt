@@ -2,6 +2,7 @@
 pandas>=1.5.0
 numpy>=1.24.0
 plotly>=5.13.0
+plotly_express==0.4.0
 streamlit>=1.25.0
 
 # Machine learning
