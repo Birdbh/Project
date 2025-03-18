@@ -25,3 +25,42 @@
     display: flex;
     justify-content: space-between;
 }
+.documentation-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #f0f2f6;
+    padding: 2px 6px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    border: 2px solid #ddd;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+}
+
+.documentation-button:visited,
+.documentation-button:link,
+.documentation-button:active {
+    text-decoration: none;
+    color: inherit;
+}
+
+.documentation-button:hover {
+    background-color: #e6e9ef;
+    text-decoration: none;
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.documentation-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.5);
+    text-decoration: none;
+}

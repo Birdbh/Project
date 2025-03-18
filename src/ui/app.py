@@ -144,7 +144,8 @@ if station_names:
     selected_station = st.selectbox('Select a station', station_names)
 
     #Date Selector
-    d = st.date_input("Process Date Selection", value="today", format="YYYY-MM-DD")
+    preset_datetime = datetime.datetime(2025, 3, 11)
+    d = st.date_input("Process Date Selection", value=preset_datetime, format="YYYY-MM-DD")
     
     # Convert date format consistently and handle potential format differences
     date_str = d.strftime("%Y-%m-%d")
