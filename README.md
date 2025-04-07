@@ -6,7 +6,7 @@
 
 This open-source manufacturing analytics platform provides transparency into automated manufacturing processes. The system collects data from industrial PLCs through OPC UA, transforms the data into meaningful metrics, and presents insights through an interactive web dashboard with advanced analytics and AI-powered assistance.
 
-Developed by Heanan Bird (UBC Okanagan - MANF 465)
+Developed by Heanan Bird & Phillip Michl (UBC Okanagan - MANF 465)
 
 ## Problem Statement
 
